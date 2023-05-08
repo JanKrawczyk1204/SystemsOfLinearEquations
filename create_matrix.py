@@ -11,6 +11,7 @@ def create_A(size, a1, a2, a3):
             array[i][i - 2] = a3
         if i < size - 2:
             array[i][i + 2] = a3
+
     return array
 
 def crate_b(size):

@@ -1,4 +1,6 @@
 import math
+
+
 def create_A(size, a1, a2, a3):
     array = [[0 for j in range(size)] for i in range(size)]
     for i in range(size):
@@ -14,11 +16,13 @@ def create_A(size, a1, a2, a3):
 
     return array
 
-def crate_b(size):
+
+def create_b(size):
     array = []
     for i in range(size):
         array.append(math.sin((i+1)*9))
     return array
+
 
 def print_array(array):
     for row in array:

@@ -39,7 +39,7 @@ def jacoby(a, b):
         if residuum(a, b, x) < eps:
             total_time = time.time() - start_time
             break
-    return x, itteration, total_time
+    return x, itteration, total_time, residuum(a, b, x)
 
 
 def gauss_seidler(a, b):
@@ -59,7 +59,7 @@ def gauss_seidler(a, b):
         if residuum(a, b, x) < eps:
             total_time = time.time() - start_time
             break
-    return x, itteration, total_time
+    return x, itteration, total_time, residuum(a, b, x)
 
 def LU_factorization(a):
     n = len(a)

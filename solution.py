@@ -69,40 +69,49 @@ def gauss_seidler(a, b):
     return x, itteration, total_time, current_residuum, residuum_table
 
 
-def LU_factorization(a):
-    n = len(a)
-    L = [[0.0] * n for i in range(n)]
-    U = [[0.0] * n for i in range(n)]
-    for i in range(n):
+def LU_factorization(A):
+    N = len(A)
+    L = [[0.0] * N for _ in range(N)]
+    U = [[0.0] * N for _ in range(N)]
+
+    for i in range(N):
         L[i][i] = 1.0
-    for k in range(n):
-        U[k][k] = a[k][k]
-        for j in range(k+1, n):
-            L[j][k] = a[j][k] / U[k][k]
-            U[k][j] = a[k][j]
-        for i in range(k+1, n):
-            for j in range(k+1, n):
-                a[i][j] = a[i][j] - L[i][k] * U[k][j]
+
+        for j in range(i + 1):
+            s1 = 0.0
+            for k in range(j):
+                s1 += U[k][i] * L[j][k]
+            U[j][i] = A[j][i] - s1
+
+        for j in range(i, N):
+            s2 = 0.0
+            for k in range(i):
+                s2 += U[k][i] * L[j][k]
+            L[j][i] = (A[j][i] - s2) / U[i][i]
+
     return L, U
 
 
-def solve_LU(a, b):
-    n = len(a)
+def solve_LU(A, b):
     start_time = time.time()
-    L, U = LU_factorization(a)
-    y = [0.0] * n
-    x = [0.0] * n
-    # rozwiąż Ly = b
-    for i in range(n):
-        y[i] = b[i]
+    L, U = LU_factorization(A)
+    N = len(L)
+    y = [0.0 for _ in range(N)]
+    x = [0.0 for _ in range(N)]
+
+    for i in range(N):
+        sum_Ly = 0.0
         for j in range(i):
-            y[i] -= L[i][j] * y[j]
-    # rozwiąż Ux = y
-    for i in range(n-1, -1, -1):
-        x[i] = y[i]
-        for j in range(i+1, n):
-            x[i] -= U[i][j] * x[j]
-        x[i] /= U[i][i]
-    total_time = time.time() - start_time
-    return x, residuum(a, b, x), total_time
+            sum_Ly += L[i][j] * y[j]
+        y[i] = b[i] - sum_Ly
+
+    for i in range(N - 1, -1, -1):
+        sum_Ux = 0.0
+        for j in range(i + 1, N):
+            sum_Ux += U[i][j] * x[j]
+        x[i] = (y[i] - sum_Ux) / U[i][i]
+
+    return x, residuum(A, b, x), time.time() - start_time
+
+
 
